@@ -36,7 +36,7 @@ def create_crops(image_path, output_dir, crop_size=224):
         cropped_image.save(os.path.join(output_dir, f"{os.path.basename(image_path).split('.')[0]}_{i}_{j}.png"))
 
 if __name__ == "__main__":
-    dataset = "train"
+    dataset = "train" #use "train" or "val" depending on which dataset you want to process
     input_dir = f"../imageNet/imagenet-mini/{dataset}/" #replace with ImageNet training directory
     output_dir = f"../imageNet/crops/{dataset}/" #replace with output directory for training crops
     count = 0

@@ -31,7 +31,30 @@ In this project, we generate a dataset that represents definite eye movements of
 Download ImageNet Mini from here:
 ```
 https://www.kaggle.com/datasets/ifigotin/imagenetmini-1000
+*ImageNet is also acceptable, just a bit overkill.*
 ```
 Unzip and save in folder **\imageNet**
+You should now have folder that looks something like this
+```
+$\imageNet\imagenet-mini
+                    |──train
+                            |──class1
+                                |──xxxx.jpg
+                                |──...
+                            |──classN
+                                |──xxxx.jpg
+                                |──...
+                    |──val
+                            |──class1
+                                |──xxxx.jpg
+                                |──...
+                            |──classN
+                                |──xxxx.jpg
+                                |──...
+```
 
-*ImageNet is also acceptable, just a bit overkill.*
+Generate Pre-train dataset from ImageMini
+```
+python imageGenerator.py
+```
+*Note: To change whether generating train set or val dataset, change the variable **dataset** in file **python imageGenerator.py***

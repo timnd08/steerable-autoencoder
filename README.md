@@ -1,6 +1,7 @@
 # Install Anaconda + Set up conda environment 
 This project uses **Conda** to manage its runtime environment, think of it as a sandbox for your software.
-Conda installation instruction can be found here (if you haven't):
+
+Conda installation instruction can be found here (if you haven't installed):
 ```
 https://www.anaconda.com/docs/getting-started/installation
 ```

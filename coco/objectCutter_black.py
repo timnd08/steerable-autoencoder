@@ -8,7 +8,7 @@ from tqdm import tqdm
 import random
 
 dataset_type = 'train' #use "train" or "val" depending on which dataset you want to process
-annotation_file = f'coco/annotations/instances_{dataset_type}2017.json'
+annotation_file = f'coco/annotations_trainval2017/instances_{dataset_type}2017.json'
 coco = COCO(annotation_file)
 
 def imgPadder(img, cent_x, cent_y):
@@ -30,7 +30,7 @@ def imgVariator(cropped_mask, cropped_img, img_id, i):
     # Only process if there are valid coordinates in the mask
     if len(coord_x) > 0:
         #masked_img = cv2.bitwise_and(cropped_img, cropped_img, mask=cropped_mask)
-        out_dir = os.path.join(f'{dataset_type}Coco_black',img_id,img_id+str(i))
+        out_dir = os.path.join(f'coco/{dataset_type}Coco_black',img_id,img_id+str(i))
         os.makedirs(out_dir, exist_ok=True)
 
         #calculate the center of the object in the cropped image

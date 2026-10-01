@@ -66,7 +66,8 @@ COCO dataset can be found here.
 ```
 https://cocodataset.org/#download
 ```
-Download and save in folder **coco**. Folder **coco** should now have following folders **train2017, val2017, annotations**.
+Download, save and unzip in folder **coco/**.  
+Folder **coco/** should now have following folders **train2017, val2017, annotations_trainval2017**.
 
 To generate black black background dataset:
 ```

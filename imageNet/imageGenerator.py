@@ -37,8 +37,8 @@ def create_crops(image_path, output_dir, crop_size=224):
 
 if __name__ == "__main__":
     dataset = "train" #use "train" or "val" depending on which dataset you want to process
-    input_dir = f"../imageNet/imagenet-mini/{dataset}/" #replace with ImageNet training directory
-    output_dir = f"../imageNet/crops/{dataset}/" #replace with output directory for training crops
+    input_dir = f"imageNet/imagenet-mini/{dataset}/" 
+    output_dir = f"imageNet/crops/{dataset}/" 
     count = 0
     for folder in tqdm(os.listdir(input_dir)):
         folder_path = os.path.join(input_dir, folder)

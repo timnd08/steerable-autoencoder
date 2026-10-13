@@ -35,6 +35,10 @@ pip install -r requirements.txt
 *Note: Not all libraries are required, some are for attempted experiments and visualizations, feel free to remove the ones not needed. If not sure, just install them all.*
 
 # Generate ImageNet Mini Pre-train Dataset
+<p float="center">
+  <img src="imagenet.png" width="100%" />
+</p>
+
 In this project, we generate a dataset that represents definite eye movements of 56px by cropping overlapping images from ImageNet. We use ImageNet Mini since it's sufficient and no need for full ImageNet dataset.
 
 Download ImageNet Mini from here:
@@ -69,6 +73,10 @@ python imageNet/imageGenerator.py
 *Note: To change whether generating train set or val dataset, change the variable **dataset***
 
 # Generate black background dataset from COCO dataset
+<p float="center">
+  <img src="coco.png" width="100%" />
+</p>
+
 For main training dataset, we generate a dataset with objects at random locations on black background from COCO dataset.  The name of the images are following this convention: *XYZ_Xcoordinate_Ycoordinate*.
 
 In this project, we use COCO 2017 Train and Val images, along with 2017 Train/Val annotations.  

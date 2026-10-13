@@ -99,20 +99,20 @@ python vector/tools/generate_list.py --name trainCoco_black --path coco/trainCoc
 python vector/tools/generate_list.py --name trainImageNet --path imageNet/trainImageNet
 ```
 
-# Download no offset ImageNet pre-trained autoencoder weights
+# Download no offset ImageNet pre-trained autoencoder weights (no eye movement)
 Save it in **vector/results/imagenet-vgg16**
 ```
 https://drive.google.com/file/d/1WwJiQ1kBcNCZ37F6PJ_0bIL0ZeU3_sV8/view?usp=sharing
 ```
 
-# Pre-training with imageNet
+# Pre-training with imageNet WITH eye movement vector
 ```shell
 bash vector/run/train.sh {model architecture such as vgg16} {you dataset name}
 # For example
 bash vector/run/train.sh vgg16 trainImageNet
 ```
 
-# Training with COCO
+# Training with COCO WITH eye movement vector
 Copy the latest checkpoint in **vector/results/trainImageNet-vgg16**.
 
 Make a new directory in **vector/results/trainCoco_black-vgg16** and save the above checkpoint here.

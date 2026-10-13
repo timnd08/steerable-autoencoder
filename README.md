@@ -34,7 +34,7 @@ pip install -r requirements.txt
 ```
 *Note: Not all libraries are required, some are for attempted experiments and visualizations, feel free to remove the ones not needed. If not sure, just install them all.*
 
-# Genertate ImageNet Mini Pre-train Dataset
+# Generate ImageNet Mini Pre-train Dataset
 In this project, we generate a dataset that represents definite eye movements of 56px by cropping overlapping images from ImageNet. We use ImageNet Mini since it's sufficient and no need for full ImageNet dataset.
 
 Download ImageNet Mini from here:

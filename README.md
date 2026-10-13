@@ -69,7 +69,8 @@ python imageNet/imageGenerator.py
 *Note: To change whether generating train set or val dataset, change the variable **dataset***
 
 # Generate black background dataset from COCO dataset
-For main training dataset, we generate a dataset with objects at random locations on black background from COCO dataset.  The name of the images are following this convention: *XYZ_Xcoordinate_Ycoordinate*
+For main training dataset, we generate a dataset with objects at random locations on black background from COCO dataset.  The name of the images are following this convention: *XYZ_Xcoordinate_Ycoordinate*.
+
 In this project, we use COCO 2017 Train and Val images, along with 2017 Train/Val annotations.  
 COCO dataset can be found here.
 ```
@@ -82,7 +83,15 @@ To generate black background dataset:
 ```
 python coco/objectCutter_black.py
 ```
-*Note: To change whether generating train set or val dataset, change the variable **dataset_type** in file **python imageGenerator.py***
+*Note: To change whether generating train set or val dataset, change the variable **dataset_type** in file **python objectCutter_black.py***
+
+# Generate list of training/validating sets
+```shell
+python vector/tools/generate_list.py --name trainCoco_black --path coco/trainCoco_black
+python vector/tools/generate_list.py --name trainImageNet --path imageNet/trainImageNet
+```
+
+
 
 # Source
 This code is a modified version from original source code here: 

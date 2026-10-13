@@ -9,11 +9,11 @@ args = parser.parse_args()
 
 folders = os.listdir(args.path)
 
-if not os.path.exists("list"):
-    os.makedirs("list")
+if not os.path.exists("vector/list"):
+    os.makedirs("vector/list")
 
-fl = open('list/' + args.name + '_list.txt', 'w')
-fn = open('list/' + args.name + '_name.txt', 'w')
+fl = open('vector/list/' + args.name + '_list.txt', 'w')
+fn = open('vector/list/' + args.name + '_name.txt', 'w')
 
 for i, folder in enumerate(tqdm(folders, total=len(folders))):
 

@@ -16,7 +16,7 @@ conda activate steerable-autoencoder
 ```
 
 # Install required Python/Python packages 
-Python 3.11
+Requirement: Python 3.11
 
 To install required libraries:
 ```
@@ -30,8 +30,8 @@ In this project, we generate a dataset that represents definite eye movements of
 Download ImageNet Mini from here:
 ```
 https://www.kaggle.com/datasets/ifigotin/imagenetmini-1000
-*ImageNet is also acceptable, just a bit overkill.*
 ```
+*ImageNet is also acceptable, just a bit overkill.*
 Unzip and save in folder **\imageNet**
 You should now have folder that looks something like this
 ```
@@ -59,7 +59,7 @@ python imageNet/imageGenerator.py
 *Note: To change whether generating train set or val dataset, change the variable **dataset***
 
 # Generate black background dataset from COCO dataset
-For main training dataset, we generate a dataset with objects at random locations on black background from COCO dataset.  
+For main training dataset, we generate a dataset with objects at random locations on black background from COCO dataset.  The name of the images are following this convention: *XYZ_Xcoordinate_Ycoordinate*
 In this project, we use COCO 2017 Train and Val images, along with 2017 Train/Val annotations.  
 COCO dataset can be found here.
 ```
@@ -68,8 +68,14 @@ https://cocodataset.org/#download
 Download, save and unzip in folder **coco/**.  
 Folder **coco/** should now have following folders **train2017, val2017, annotations_trainval2017**.
 
-To generate black black background dataset:
+To generate black background dataset:
 ```
 python coco/objectCutter_black.py
 ```
 *Note: To change whether generating train set or val dataset, change the variable **dataset_type** in file **python imageGenerator.py***
+
+# Source
+This code is a modified version from original source code here: 
+```
+https://github.com/Horizon2333/imagenet-autoencoder
+```

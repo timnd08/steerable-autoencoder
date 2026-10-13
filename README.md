@@ -5,8 +5,7 @@ Conda installation instruction can be found here (if you haven't installed):
 https://www.anaconda.com/docs/getting-started/installation
 ```
 
-To generate a conda environment (aka create a sandbox)
-In the terminal:
+To create a conda environment in the terminal:
 ```
 conda create --name steerable-autoencoder python=3.11
 ```

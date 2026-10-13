@@ -91,10 +91,57 @@ python vector/tools/generate_list.py --name trainCoco_black --path coco/trainCoc
 python vector/tools/generate_list.py --name trainImageNet --path imageNet/trainImageNet
 ```
 
+# Download pre-trained no offset autoencoder weights
+Save it in **vector/results/imagenet-vgg16**
+```
+https://drive.google.com/file/d/1WwJiQ1kBcNCZ37F6PJ_0bIL0ZeU3_sV8/view?usp=sharing
+```
 
+# Pre-training with imageNet
+```shell
+bash vector/run/train.sh {model architecture such as vgg16} {you dataset name}
+# For example
+bash vector/run/train.sh vgg16 trainImageNet
+```
+
+# Training with COCO
+Copy the latest checkpoint in **vector/results/trainImageNet-vgg16**.
+
+Make a new directory in **vector/results/trainCoco_black-vgg16** and save the above checkpoint here.
+
+Then run
+
+```shell
+bash vector/run/resume.sh {model architecture such as vgg16} {you dataset name}
+# For example
+bash vector/run/resume.sh vgg16 trainCoco_black
+```
+
+For fully trained steerable autoencoder weights
+```shell
+https://uwoca-my.sharepoint.com/:u:/g/personal/knguy52_uwo_ca/IQASHc682ceWQIAXKpco4GssAfqgnyMqbG3jDqKXWhFDFqw?e=lleRQY
+```
+
+p/s: if the link expires, please send me a message
+
+# Visualize and evaluate trained model
+
+To visualize
+```shell
+python vector/tools/reconstruct_recenter.py --resume {path to checkpoint} --val_list {path to test/valid file list} 
+# For example
+python vector/tools/reconstruct_recenter.py --resume vector/results/trainCoco_black-vgg16/001.pth --val_list vector/list/valCoco_black_list.txt 
+```
+
+To evaluate model
+```shell
+python vector/tools/steerable_autoencoder_evaluation.py --resume {path to checkpoint} --val_list {path to test/valid file list} 
+# For example
+python vector/tools/steerable_autoencoder_evaluation.py --resume vector/results/trainCoco_black-vgg16/001.pth --val_list vector/list/valCoco_black_list.txt 
+```
 
 # Source
 This code is a modified version from original source code here: 
-```
+```shell
 https://github.com/Horizon2333/imagenet-autoencoder
 ```

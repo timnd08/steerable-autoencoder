@@ -1,3 +1,12 @@
+# Abstract
+
+# Model Architecture
+<p float="center">
+  <img src="architecture.PNG" width="100%" />
+  <br>
+    <em> Autoencoder with eye movement vector injection at the latent space </em>
+ </p>
+
 # Install Anaconda + Set up conda environment 
 This project uses **Conda** to manage its runtime environment, think of it as a sandbox for your software.  
 Conda installation instruction can be found here (if you haven't installed):

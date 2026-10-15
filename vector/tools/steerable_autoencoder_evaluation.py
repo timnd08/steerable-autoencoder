@@ -153,7 +153,7 @@ def main(args):
     if args.print_shapes or args.shape_csv:
         show_model_dimensions(model, args.input_size, args.shape_csv)
 
-    val_image_dirs = loadImageDirs(args.val_list)[:1]
+    val_image_dirs = loadImageDirs(args.val_list)
 
     losses = []
 

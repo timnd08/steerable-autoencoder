@@ -33,7 +33,7 @@ def create_crops(image_path, output_dir, crop_size=224):
     for i, j in itertools.product(range(0, w-crop_size+1, crop_size//4), range(0, h-crop_size+1, crop_size//4)):
         box = (i, j, i + crop_size, j + crop_size)
         cropped_image = image.crop(box)
-        cropped_image.save(os.path.join(output_dir, f"{os.path.basename(image_path).split('.')[0]}_{i}_{j}.png"))
+        cropped_image.save(os.path.join(output_dir, f"{os.path.basename(image_path).split('.')[0]}_{224-i}_{224-j}.png"))
 
 if __name__ == "__main__":
     dataset = "train" #use "train" or "val" depending on which dataset you want to process

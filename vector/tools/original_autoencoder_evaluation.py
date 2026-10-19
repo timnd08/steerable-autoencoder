@@ -67,7 +67,7 @@ def imageLoader(image_path, image_files):
     for image_file in image_files:
         img = Image.open(os.path.join(image_path, image_file)).convert('RGB')
         images.append(img)
-    return images, vectors
+    return images
 
 # main function
 def main(args):

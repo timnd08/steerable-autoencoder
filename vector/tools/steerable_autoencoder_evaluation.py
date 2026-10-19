@@ -129,11 +129,6 @@ def imageAndVectorLoader(image_path, image_files):
         gt_img_name = "_".join(name_parts[:-2]) + '_112_112.png'
         gt_img = Image.open(os.path.join(image_path, gt_img_name)).convert('RGB')
 
-        #imagenet
-        # vectorX = (224.0 - float(name_parts[-2]) - 112.0) / 112.0
-        # vectorY = (224.0 - float(name_parts[-1]) - 112.0) / 112.0
-
-        # coco
         vectorX = (float(name_parts[-2]) - 112.0) / 112.0
         vectorY = (float(name_parts[-1]) - 112.0) / 112.0
 
@@ -170,7 +165,7 @@ def main(args):
     if args.print_shapes or args.shape_csv:
         show_model_dimensions(model, args.input_size, args.shape_csv)
 
-    val_image_dirs = loadImageDirs(args.val_list)  # limit to first 5 directories for evaluation
+    val_image_dirs = loadImageDirs(args.val_list) 
 
     losses = []
     cross_correlations = []
@@ -186,20 +181,20 @@ def main(args):
         cross_correlations.extend(cross_correlation_calculator(out_images, input_images))
 
         # visualize the input, output, and ground truth images
-        for i in range(len(input_images)):
-            input_img = transforms.ToPILImage()(input_images[i].cpu())
-            output_img = transforms.ToPILImage()(out_images[i].cpu())
-            gt_img = transforms.ToPILImage()(groundtruth_images[i].cpu())
+        # for i in range(len(input_images)):
+        #     input_img = transforms.ToPILImage()(input_images[i].cpu())
+        #     output_img = transforms.ToPILImage()(out_images[i].cpu())
+        #     gt_img = transforms.ToPILImage()(groundtruth_images[i].cpu())
 
-            # create a new image to concatenate the three images
-            concatenated_img = Image.new('RGB', (input_img.width * 3, input_img.height))
-            concatenated_img.paste(input_img, (0, 0))
-            concatenated_img.paste(output_img, (input_img.width, 0))
-            concatenated_img.paste(gt_img, (input_img.width * 2, 0))
+        #     # create a new image to concatenate the three images
+        #     concatenated_img = Image.new('RGB', (input_img.width * 3, input_img.height))
+        #     concatenated_img.paste(input_img, (0, 0))
+        #     concatenated_img.paste(output_img, (input_img.width, 0))
+        #     concatenated_img.paste(gt_img, (input_img.width * 2, 0))
 
-            # save the concatenated image
-            os.makedirs("figs/test", exist_ok=True)
-            concatenated_img.save(os.path.join("figs/test", f"comparison_{val_image_dirs.index(image_dir)}_{i}.png"))
+        #     # save the concatenated image
+        #     os.makedirs("figs/test", exist_ok=True)
+        #     concatenated_img.save(os.path.join("figs/test", f"comparison_{val_image_dirs.index(image_dir)}_{i}.png"))
 
     print('=> average loss: {}'.format(sum(losses) / len(losses)))
     print('=> average cross correlation: {}'.format(sum(cross_correlations) / len(cross_correlations)))

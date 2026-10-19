@@ -14,6 +14,7 @@ import torch.nn as nn
 from torchvision.transforms import transforms
 from pytorch_msssim import ssim, ms_ssim
 from tqdm import tqdm
+import torch.nn.functional as F
 
 # get arguments
 def get_args():
@@ -22,7 +23,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Autoencoder evaluator')
     parser.add_argument('--arch', default='vgg16', type=str, 
                         help='backbone architechture')
-    parser.add_argument('--resume', default='results/imageMini-vgg16_fc/103.pth', type=str)
+    parser.add_argument('--resume', default='results/imageMini-vgg16_fc/000.pth', type=str)
     parser.add_argument('--val_list', default='list/imageNet_val_list.txt', type=str)           
     parser.add_argument('--print_shapes', action='store_true',
                         help='print layer output dimensions before evaluation')
@@ -128,15 +129,31 @@ def imageAndVectorLoader(image_path, image_files):
         gt_img_name = "_".join(name_parts[:-2]) + '_112_112.png'
         gt_img = Image.open(os.path.join(image_path, gt_img_name)).convert('RGB')
 
-        vectorX = float(name_parts[-2]) - 112.0
-        vectorY = float(name_parts[-1]) - 112.0
-        vector = (vectorX/112.0, vectorY/112.0)
+        #imagenet
+        # vectorX = (224.0 - float(name_parts[-2]) - 112.0) / 112.0
+        # vectorY = (224.0 - float(name_parts[-1]) - 112.0) / 112.0
+
+        # coco
+        vectorX = (float(name_parts[-2]) - 112.0) / 112.0
+        vectorY = (float(name_parts[-1]) - 112.0) / 112.0
+
+        vector = (vectorX, vectorY)
 
         input_images.append(input_img)
         groundtruth_images.append(gt_img)
         vectors.append(vector)
 
     return input_images, groundtruth_images, vectors
+
+def cross_correlation_calculator(out_images, target_images):
+    cross_correlation = []
+    for out_img, target_img in zip(out_images, target_images):
+        out_img, target_img = out_img.unsqueeze(0), target_img.unsqueeze(0)
+        out_img_flat = out_img.view(-1)
+        target_img_flat = target_img.view(-1)
+        correlation = F.cosine_similarity(out_img_flat, target_img_flat, dim=0)
+        cross_correlation.append(correlation.item())
+    return cross_correlation
 
 # main function
 def main(args):
@@ -153,9 +170,10 @@ def main(args):
     if args.print_shapes or args.shape_csv:
         show_model_dimensions(model, args.input_size, args.shape_csv)
 
-    val_image_dirs = loadImageDirs(args.val_list)
+    val_image_dirs = loadImageDirs(args.val_list)  # limit to first 5 directories for evaluation
 
     losses = []
+    cross_correlations = []
 
     for image_dir in tqdm(val_image_dirs):
         input_images, groundtruth_images, input_vectors = imageAndVectorLoader(image_dir, os.listdir(image_dir))
@@ -165,23 +183,26 @@ def main(args):
         out_images = model(input_images, input_vectors)
         
         losses.extend(loss_calculator(out_images, groundtruth_images))
+        cross_correlations.extend(cross_correlation_calculator(out_images, input_images))
 
         # visualize the input, output, and ground truth images
-        # for i in range(len(input_images)):
-        #     input_img = transforms.ToPILImage()(input_images[i].cpu())
-        #     output_img = transforms.ToPILImage()(out_images[i].cpu())
-        #     gt_img = transforms.ToPILImage()(groundtruth_images[i].cpu())
+        for i in range(len(input_images)):
+            input_img = transforms.ToPILImage()(input_images[i].cpu())
+            output_img = transforms.ToPILImage()(out_images[i].cpu())
+            gt_img = transforms.ToPILImage()(groundtruth_images[i].cpu())
 
-        #     # create a new image to concatenate the three images
-        #     concatenated_img = Image.new('RGB', (input_img.width * 3, input_img.height))
-        #     concatenated_img.paste(input_img, (0, 0))
-        #     concatenated_img.paste(output_img, (input_img.width, 0))
-        #     concatenated_img.paste(gt_img, (input_img.width * 2, 0))
+            # create a new image to concatenate the three images
+            concatenated_img = Image.new('RGB', (input_img.width * 3, input_img.height))
+            concatenated_img.paste(input_img, (0, 0))
+            concatenated_img.paste(output_img, (input_img.width, 0))
+            concatenated_img.paste(gt_img, (input_img.width * 2, 0))
 
-        #     # save the concatenated image
-        #     concatenated_img.save(os.path.join("figs/test", f"comparison_{i}.png"))
+            # save the concatenated image
+            os.makedirs("figs/test", exist_ok=True)
+            concatenated_img.save(os.path.join("figs/test", f"comparison_{val_image_dirs.index(image_dir)}_{i}.png"))
 
     print('=> average loss: {}'.format(sum(losses) / len(losses)))
+    print('=> average cross correlation: {}'.format(sum(cross_correlations) / len(cross_correlations)))
 
     # model dimensions for each layers
     # print('=> model dimensions for each layer:')

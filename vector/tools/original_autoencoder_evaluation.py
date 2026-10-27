@@ -40,7 +40,7 @@ def loadImageDirs(image_list_file):
 
 # define loss function
 class hybridMSSIML1Loss(nn.Module):
-    def __init__(self, alpha=0.84):
+    def __init__(self, alpha=0.80):
         super(hybridMSSIML1Loss, self).__init__()
         self.alpha = alpha
         self.l1_loss = nn.L1Loss()

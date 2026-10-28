@@ -140,15 +140,15 @@ def imageAndVectorLoader(image_path, image_files):
 
     return input_images, groundtruth_images, vectors
 
-def cross_correlation_calculator(out_images, target_images):
-    cross_correlation = []
+def correlation_calculator(out_images, target_images):
+    correlations = []
     for out_img, target_img in zip(out_images, target_images):
         out_img, target_img = out_img.unsqueeze(0), target_img.unsqueeze(0)
         out_img_flat = out_img.view(-1)
         target_img_flat = target_img.view(-1)
         correlation = F.cosine_similarity(out_img_flat, target_img_flat, dim=0)
-        cross_correlation.append(correlation.item())
-    return cross_correlation
+        correlations.append(correlation.item())
+    return correlations
 
 # main function
 def main(args):
@@ -168,7 +168,7 @@ def main(args):
     val_image_dirs = loadImageDirs(args.val_list) 
 
     losses = []
-    cross_correlations = []
+    correlations = []
 
     for image_dir in tqdm(val_image_dirs):
         input_images, groundtruth_images, input_vectors = imageAndVectorLoader(image_dir, os.listdir(image_dir))
@@ -178,7 +178,7 @@ def main(args):
         out_images = model(input_images, input_vectors)
         
         losses.extend(loss_calculator(out_images, groundtruth_images))
-        cross_correlations.extend(cross_correlation_calculator(out_images, input_images))
+        correlations.extend(correlation_calculator(out_images, groundtruth_images))
 
         # visualize the input, output, and ground truth images
         # for i in range(len(input_images)):
@@ -197,7 +197,7 @@ def main(args):
         #     concatenated_img.save(os.path.join("figs/test", f"comparison_{val_image_dirs.index(image_dir)}_{i}.png"))
 
     print('=> average loss: {}'.format(sum(losses) / len(losses)))
-    print('=> average cross correlation: {}'.format(sum(cross_correlations) / len(cross_correlations)))
+    print('=> average correlation: {}'.format(sum(correlations) / len(correlations)))
 
     # model dimensions for each layers
     # print('=> model dimensions for each layer:')

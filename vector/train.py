@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.multiprocessing as mp
 
 import utils
-import models.builer as builder
+import models.builder as builder
 import dataloader
 from tqdm import tqdm
 from pytorch_msssim import ssim, ms_ssim

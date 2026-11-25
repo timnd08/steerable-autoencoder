@@ -13,6 +13,7 @@ import torch.nn as nn
 from torchvision.transforms import transforms
 from pytorch_msssim import ssim, ms_ssim
 from tqdm import tqdm
+import torch.nn.functional as F 
 
 # get arguments
 def get_args():
@@ -61,6 +62,40 @@ def loss_calculator(out_images, target_images):
     
     return losses
 
+def correlation_calculator(out_images, target_images):
+    cosine_correlation = []
+    pearson_correlation = []
+    for out_img, target_img in zip(out_images, target_images):
+        out_img, target_img = out_img.unsqueeze(0), target_img.unsqueeze(0)
+        out_img_flat = out_img.view(-1)
+        target_img_flat = target_img.view(-1)
+        correlation = F.cosine_similarity(out_img_flat, target_img_flat, dim=0)
+        cosine_correlation.append(correlation.item())
+
+        if not (torch.isfinite(out_img_flat).all() and torch.isfinite(target_img_flat).all()):
+            pearson_correlation.append(float("nan"))
+            continue
+
+        out_centered = out_img_flat - out_img_flat.mean()
+        target_centered = target_img_flat - target_img_flat.mean()
+
+        denominator = torch.linalg.vector_norm(out_centered) * torch.linalg.vector_norm(target_centered)
+
+        if denominator == 0:
+            pearson_correlation.append(float("nan"))
+            continue
+
+        correlation = torch.dot(out_centered, target_centered) / denominator
+        pearson_correlation.append(correlation.item())
+    return cosine_correlation, pearson_correlation
+
+def finite_average(values):
+    values = torch.tensor(values, dtype=torch.float64)
+    finite_values = values[torch.isfinite(values)]
+    if finite_values.numel() == 0:
+        return float("nan"), values.numel()
+    return finite_values.mean().item(), values.numel() - finite_values.numel()
+
 # function to load images
 def imageLoader(image_path, image_files):
     images = []
@@ -84,16 +119,40 @@ def main(args):
     val_image_dirs = loadImageDirs(args.val_list)
 
     losses = []
-
+    cosine_correlations = []
+    pearson_correlations = []
     for image_dir in tqdm(val_image_dirs):
         input_images = imageLoader(image_dir, os.listdir(image_dir))
         input_images = torch.stack([transforms.ToTensor()(img) for img in input_images]).cuda()
         out_images = model(input_images)
         
         losses.extend(loss_calculator(out_images, input_images))
+        cosine_correlation, pearson_correlation = correlation_calculator(out_images, input_images)
+        cosine_correlations.extend(cosine_correlation)
+        pearson_correlations.extend(pearson_correlation)
+
+        # # visualize the input and output images
+        # for i in range(len(input_images)):
+        #     input_img = transforms.ToPILImage()(input_images[i].cpu())
+        #     output_img = transforms.ToPILImage()(out_images[i].cpu())
+            
+        #     # create a new image to concatenate the two images
+        #     concatenated_img = Image.new('RGB', (input_img.width * 2, input_img.height))
+        #     concatenated_img.paste(input_img, (0, 0))
+        #     concatenated_img.paste(output_img, (input_img.width, 0))
+
+        #     # save the concatenated image
+        #     os.makedirs("figs/test", exist_ok=True)
+        #     concatenated_img.save(os.path.join("figs/test", f"comparison_{val_image_dirs.index(image_dir)}_{i}.png"))
 
     print('=> average loss: {}'.format(sum(losses) / len(losses)))
-
+    average_cosine, invalid_cosine = finite_average(cosine_correlations)
+    average_pearson, invalid_pearson = finite_average(pearson_correlations)
+    print('=> average cosine similarity: {}'.format(average_cosine))
+    print('=> average Pearson correlation: {}'.format(average_pearson))
+    print('=> invalid cosine samples: {}'.format(invalid_cosine))
+    print('=> undefined/non-finite Pearson samples: {}'.format(invalid_pearson))
+    
 if __name__ == '__main__':
 
     args = get_args()

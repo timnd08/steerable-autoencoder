@@ -12,7 +12,7 @@ import sys
 sys.path.append("./")
 
 import utils
-import models.builer as builder
+import models.builder as builder
 import dataloader
 
 import os
